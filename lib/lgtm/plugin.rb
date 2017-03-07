@@ -1,32 +1,32 @@
 require 'net/http'
 
 module Danger
-  # This is your plugin class. Any attributes or methods you expose here will
-  # be available from within your Dangerfile.
+  # Lgtm let danger say lgtm when there is no violations.
+  # Default use random lgtm image from [lgtm.in](https://lgtm.in).
   #
-  # To be published on the Danger plugins site, you will need to have
-  # the public interface documented. Danger uses [YARD](http://yardoc.org/)
-  # for generating documentation from your plugin source, and you can verify
-  # by running `danger plugins lint` or `bundle exec rake spec`.
+  # @example Post lgtm with a specific image
   #
-  # You should replace these comments with a public description of your library.
-  #
-  # @example Ensure people are well warned about merging on Mondays
-  #
-  #          my_plugin.warn_on_mondays
+  #          lgtm.check_lgtm image_url: 'http://some.iamge'
   #
   # @see  Ke Xu/danger-lgtm
-  # @tags monday, weekends, time, rattata
+  # @tags lgtm, github
   #
   class DangerLgtm < Plugin
+    # Check status report, say lgtm if no violations
+    # Generates a `markdown` of a lgtm iamge.
+    #
+    # @param   [image_url] lgtm image url
+    #
+    # @return  [void]
+    #
     def check_lgtm(image_url: nil)
-      if status_report[:errors].length == 0 && status_report[:warnings].length == 0
-        if !image_url
-          id = Net::HTTP.get_response('lgtm.in', '/g')['location'].split('/').last
-          image_url = "https://lgtm.in/p/#{id}"
-        end
-        markdown("![LGTM](#{image_url})")
+      return unless status_report[:errors].length.zero? &&
+                    status_report[:warnings].length.zero?
+      unless image_url
+        id = Net::HTTP.get_response('lgtm.in', '/g')['location'].split('/').last
+        image_url = "https://lgtm.in/p/#{id}"
       end
+      markdown("![LGTM](#{image_url})")
     end
   end
 end
