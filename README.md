@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/leonhartX/danger-lgtm.svg?branch=master)](https://travis-ci.org/leonhartX/danger-lgtm)
 # danger-lgtm
 
 Make danger say LGTM.
