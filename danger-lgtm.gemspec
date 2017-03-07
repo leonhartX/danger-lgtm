@@ -6,11 +6,11 @@ require 'lgtm/gem_version.rb'
 Gem::Specification.new do |spec|
   spec.name          = 'danger-lgtm'
   spec.version       = Lgtm::VERSION
-  spec.authors       = ['Ke Xu']
+  spec.authors       = ['leonhartX']
   spec.email         = ['leonhartx.k@gmail.com']
-  spec.description   = %q{A short description of danger-lgtm.}
-  spec.summary       = %q{A longer description of danger-lgtm.}
-  spec.homepage      = 'https://github.com/Ke Xu/danger-lgtm'
+  spec.description   = %q{Let danger say LGTM!}
+  spec.summary       = %q{Danger Plugin used to post LGTM iamge when there is no violations}
+  spec.homepage      = 'https://github.com/leonhartX/danger-lgtm'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
