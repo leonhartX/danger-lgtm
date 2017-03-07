@@ -1,6 +1,6 @@
 # danger-lgtm
 
-A description of danger-lgtm.
+Make danger say LGTM.
 
 ## Installation
 

@@ -1,3 +1,5 @@
+require 'net/http'
+
 module Danger
   # This is your plugin class. Any attributes or methods you expose here will
   # be available from within your Dangerfile.
@@ -17,9 +19,14 @@ module Danger
   # @tags monday, weekends, time, rattata
   #
   class DangerLgtm < Plugin
-    def lgtm
-      puts status_report
-      message('lgtm!');
+    def check_lgtm(image_url: nil)
+      if status_report[:errors].length == 0 && status_report[:warnings].length == 0
+        if !image_url
+          id = Net::HTTP.get_response('lgtm.in', '/g')['location'].split('/').last
+          image_url = "https://lgtm.in/p/#{id}"
+        end
+        markdown("![LGTM](#{image_url})")
+      end
     end
   end
 end

@@ -19,9 +19,18 @@ module Danger
       # You should replace these with your own.
 
       it "lgtm with no violation" do
-        @lgtm.lgtm
+        @lgtm.check_lgtm
+        expect(@dangerfile.status_report[:markdowns].length).to eq(1)
+      end
 
-        expect(@dangerfile.status_report[:message].length).to eq(1)
+      it "pick random pic from lgtm.in" do
+        @lgtm.check_lgtm
+        expect(@dangerfile.status_report[:markdowns][0].message).to match(/https:\/\/lgtm.\in\/p\//)
+      end
+
+      it "use given url" do
+        @lgtm.check_lgtm image_url: 'http://imgur.com/Irk2wyX.jpg'
+        expect(@dangerfile.status_report[:markdowns][0].message).to match(/http:\/\/imgur\.com\/Irk2wyX\.jpg/)
       end
     end
   end
