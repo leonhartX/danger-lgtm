@@ -8,8 +8,13 @@ Make danger say LGTM.
 
 ## Usage
 
-    Methods and attributes from this plugin are available in
-    your `Dangerfile` under the `lgtm` namespace.
+Add the lgtm call to the last line of your Dangerfile, it will post a random lgtm picture from [lgtm.in](https://lgtm.in)
+
+    lgtm.check_lgtm 
+
+Also you can specify a image url to post with `image_url`
+
+    lgtm.check_lgtm image_url: 'https://yourimage'
 
 ## Development
 
