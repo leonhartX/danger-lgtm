@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    danger-lgtm (0.1.0)
+    danger-lgtm (0.1.1)
       danger-plugin-api (~> 1.0)
 
 GEM
@@ -130,4 +130,4 @@ DEPENDENCIES
   yard (~> 0.8)
 
 BUNDLED WITH
-   1.13.7
+   1.14.6
