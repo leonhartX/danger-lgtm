@@ -8,7 +8,7 @@ module Danger
   #
   #          lgtm.check_lgtm image_url: 'http://some.iamge'
   #
-  # @see  Ke Xu/danger-lgtm
+  # @see  leonhartX/danger-lgtm
   # @tags lgtm, github
   #
   class DangerLgtm < Plugin
