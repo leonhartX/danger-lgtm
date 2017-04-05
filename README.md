@@ -1,4 +1,7 @@
-[![Build Status](https://travis-ci.org/leonhartX/danger-lgtm.svg?branch=master)](https://travis-ci.org/leonhartX/danger-lgtm)
+[![Gem](https://img.shields.io/gem/v/danger-lgtm.svg)](https://rubygems.org/gems/danger-lgtm)
+[![Gem](https://img.shields.io/gem/dt/danger-lgtm.svg)](https://rubygems.org/gems/danger-lgtm)
+[![Gem](https://img.shields.io/gem/dtv/danger-lgtm.svg)](https://rubygems.org/gems/danger-lgtm)
+[![Travis branch](https://img.shields.io/travis/leonhartX/danger-lgtm/master.svg)](https://travis-ci.org/leonhartX/danger-lgtm)
 # danger-lgtm
 
 Make danger say LGTM.
