@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.expand_path('../spec_helper', __FILE__)
 
 module Danger
@@ -26,9 +28,9 @@ module Danger
       it 'pick random pic from lgtm.in' do
         mock = double(
           :[] => 'https://lgtm.in/p/sSuI4hm0q',
-          body: JSON.generate({
+          body: JSON.generate(
             actualImageUrl: 'https://example.com/image.jpg'
-          })
+          )
         )
 
         allow(Net::HTTP).to receive(:start).and_return(mock)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 require 'json'
 require 'net/http'
@@ -14,7 +16,7 @@ module Danger
   # @tags lgtm, github
   #
   class DangerLgtm < Plugin
-    RANDOM_LGTM_POST_URL = 'http://lgtm.in/g'
+    RANDOM_LGTM_POST_URL = 'http://lgtm.in/g'.freeze
 
     # Check status report, say lgtm if no violations
     # Generates a `markdown` of a lgtm iamge.
