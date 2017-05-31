@@ -1,3 +1,5 @@
+require 'uri'
+require 'json'
 require 'net/http'
 
 module Danger
@@ -12,6 +14,8 @@ module Danger
   # @tags lgtm, github
   #
   class DangerLgtm < Plugin
+    RANDOM_LGTM_POST_URL = 'http://lgtm.in/g'
+
     # Check status report, say lgtm if no violations
     # Generates a `markdown` of a lgtm iamge.
     #
@@ -22,11 +26,40 @@ module Danger
     def check_lgtm(image_url: nil)
       return unless status_report[:errors].length.zero? &&
                     status_report[:warnings].length.zero?
-      unless image_url
-        id = Net::HTTP.get_response('lgtm.in', '/g')['location'].split('/').last
-        image_url = "https://lgtm.in/p/#{id}"
+
+      image_url ||= fetch_image_url
+
+      markdown(
+        markdown_template(image_url)
+      )
+    end
+
+    private
+
+    def fetch_image_url
+      lgtm_post_url = process_request(RANDOM_LGTM_POST_URL)['location']
+
+      lgtm_post_response = process_request(lgtm_post_url) do |req|
+        req['Accept'] = 'application/json'
       end
-      markdown("![LGTM](#{image_url})")
+
+      lgtm_post = JSON.parse(lgtm_post_response.body)
+
+      lgtm_post['actualImageUrl']
+    end
+
+    def process_request(url)
+      uri = URI(url)
+
+      req = Net::HTTP::Get.new(uri)
+
+      yield req if block_given?
+
+      Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }
+    end
+
+    def markdown_template(image_url)
+      "<p align='center'><img src='#{image_url}' alt='LGTM' /></p>"
     end
   end
 end

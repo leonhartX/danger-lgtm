@@ -24,9 +24,19 @@ module Danger
       end
 
       it 'pick random pic from lgtm.in' do
+        mock = double(
+          :[] => 'https://lgtm.in/p/sSuI4hm0q',
+          body: JSON.generate({
+            actualImageUrl: 'https://example.com/image.jpg'
+          })
+        )
+
+        allow(Net::HTTP).to receive(:start).and_return(mock)
+
         @lgtm.check_lgtm
+
         expect(@dangerfile.status_report[:markdowns][0].message)
-          .to match(%r{https:\/\/lgtm.\in\/p\/})
+          .to match(%r{https:\/\/example.com\/image.jpg})
       end
 
       it 'use given url' do
