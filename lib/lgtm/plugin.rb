@@ -59,9 +59,9 @@ module Danger
 
       yield req if block_given?
 
-      Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true) do |http|
+      Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
         http.request(req)
-      end 
+      end
     end
 
     def markdown_template(image_url)
