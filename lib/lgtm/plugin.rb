@@ -47,7 +47,9 @@ module Danger
 
       lgtm_post = JSON.parse(lgtm_post_response.body)
 
-      lgtm_post['actualImageUrl']
+      url = lgtm_post['actualImageUrl']
+      return fetch_image_url unless URI.parse(url).scheme == 'https'
+      url
     end
 
     def process_request(url)
