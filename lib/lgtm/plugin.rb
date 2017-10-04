@@ -16,7 +16,7 @@ module Danger
   # @tags lgtm, github
   #
   class DangerLgtm < Plugin
-    RANDOM_LGTM_POST_URL = 'http://lgtm.in/g'.freeze
+    RANDOM_LGTM_POST_URL = 'https://lgtm.in/g'.freeze
 
     # Check status report, say lgtm if no violations
     # Generates a `markdown` of a lgtm iamge.
@@ -57,7 +57,9 @@ module Danger
 
       yield req if block_given?
 
-      Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }
+      Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true) do |http|
+        http.request(req)
+      end 
     end
 
     def markdown_template(image_url)
