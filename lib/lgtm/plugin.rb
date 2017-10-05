@@ -19,7 +19,7 @@ module Danger
     RANDOM_LGTM_POST_URL = 'https://lgtm.in/g'.freeze
 
     # Check status report, say lgtm if no violations
-    # Generates a `markdown` of a lgtm iamge.
+    # Generates a `markdown` of a lgtm image.
     #
     # @param   [image_url] lgtm image url
     # @param   [https_image_only] fetching https image only if true
