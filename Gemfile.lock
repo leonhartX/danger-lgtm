@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    danger-lgtm (0.3.0)
+    danger-lgtm (1.0.0)
       danger-plugin-api (~> 1.0)
 
 GEM
