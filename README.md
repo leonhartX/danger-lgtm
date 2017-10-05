@@ -20,6 +20,10 @@ Also you can specify a image url to post with `image_url`
 
     lgtm.check_lgtm image_url: 'https://yourimage'
 
+If you want a https image only, you can use `https_image_only` option
+
+    lgtm.check_lgtm https_image_only: true
+
 ## Development
 
 1. Clone this repo
