@@ -22,14 +22,15 @@ module Danger
     # Generates a `markdown` of a lgtm iamge.
     #
     # @param   [image_url] lgtm image url
+    # @param   [https_image_only] fetching https image only if true
     #
     # @return  [void]
     #
-    def check_lgtm(image_url: nil)
+    def check_lgtm(image_url: nil, https_image_only: false)
       return unless status_report[:errors].length.zero? &&
                     status_report[:warnings].length.zero?
 
-      image_url ||= fetch_image_url
+      image_url ||= fetch_image_url(https_image_only: https_image_only)
 
       markdown(
         markdown_template(image_url)
@@ -38,7 +39,7 @@ module Danger
 
     private
 
-    def fetch_image_url
+    def fetch_image_url(https_image_only: false)
       lgtm_post_url = process_request(RANDOM_LGTM_POST_URL)['location']
 
       lgtm_post_response = process_request(lgtm_post_url) do |req|
@@ -48,7 +49,9 @@ module Danger
       lgtm_post = JSON.parse(lgtm_post_response.body)
 
       url = lgtm_post['actualImageUrl']
-      return fetch_image_url unless URI.parse(url).scheme == 'https'
+      if https_image_only && URI.parse(url).scheme != 'https'
+        return fetch_image_url(https_image_only: true)
+      end
       url
     end
 
