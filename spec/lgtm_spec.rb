@@ -25,17 +25,29 @@ module Danger
         expect(@dangerfile.status_report[:markdowns].length).to eq(1)
       end
 
-      it 'pick random pic from lgtm.in' do
-        mock = double(
-          :[] => 'https://lgtm.in/p/sSuI4hm0q',
+      def mock(request_url: 'https://lgtm.in/p/sSuI4hm0q',
+               actual_image_url: 'https://example.com/image.jpg')
+        double(
+          :[] => request_url,
           body: JSON.generate(
-            actualImageUrl: 'https://example.com/image.jpg'
+            actualImageUrl: actual_image_url
           )
         )
+      end
 
+      it 'pick random pic from lgtm.in' do
         allow(Net::HTTP).to receive(:start).and_return(mock)
 
         @lgtm.check_lgtm
+
+        expect(@dangerfile.status_report[:markdowns][0].message)
+          .to match(%r{https:\/\/example.com\/image.jpg})
+      end
+
+      it 'pick random pic from lgtm.in with https_image_only option' do
+        allow(Net::HTTP).to receive(:start).and_return(mock)
+
+        @lgtm.check_lgtm https_image_only: true
 
         expect(@dangerfile.status_report[:markdowns][0].message)
           .to match(%r{https:\/\/example.com\/image.jpg})
