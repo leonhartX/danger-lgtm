@@ -39,11 +39,9 @@ module Danger
 
     private
 
+    # returns "<h1 align="center">LGTM</h1>" when ServiceTemporarilyUnavailable.
     def fetch_image_url(https_image_only: false)
-      lgtm_post_req = process_request(RANDOM_LGTM_POST_URL)
-      return if lgtm_post_req.code == '503' # returns "<h1 align="center">LGTM</h1>" when Service Temporarily Unavailable; Over Quota.
-      lgtm_post_url = lgtm_post_req['location']
-
+      return unless lgtm_post_url
       lgtm_post_response = process_request(lgtm_post_url) do |req|
         req['Accept'] = 'application/json'
       end
@@ -67,6 +65,12 @@ module Danger
       Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
         http.request(req)
       end
+    end
+
+    def lgtm_post_url
+      lgtm_post_req = process_request(RANDOM_LGTM_POST_URL)
+      return if lgtm_post_req.code == '503'
+      lgtm_post_req['location']
     end
 
     def markdown_template(image_url)
