@@ -41,7 +41,7 @@ module Danger
 
     def fetch_image_url(https_image_only: false)
       lgtm_post_req = process_request(RANDOM_LGTM_POST_URL)
-      return if lgtm_post_req.code == '503' # returns "img tag src='#'" when Service Temporarily Unavailable; Over Quota.
+      return if lgtm_post_req.code == '503' # returns "<h1 align="center">LGTM</h1>" when Service Temporarily Unavailable; Over Quota.
       lgtm_post_url = lgtm_post_req['location']
 
       lgtm_post_response = process_request(lgtm_post_url) do |req|
@@ -70,7 +70,11 @@ module Danger
     end
 
     def markdown_template(image_url)
-      "<p align='center'><img src='#{(image_url || '#')}' alt='LGTM' /></p>"
+      if image_url.nil?
+        "<h1 align='center'>LGTM</h1>"
+      else
+        "<p align='center'><img src='#{image_url}' alt='LGTM' /></p>"
+      end
     end
   end
 end
