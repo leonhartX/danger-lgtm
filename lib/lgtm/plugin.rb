@@ -39,9 +39,9 @@ module Danger
 
     private
 
+    # returns "<h1 align="center">LGTM</h1>" when ServiceTemporarilyUnavailable.
     def fetch_image_url(https_image_only: false)
-      lgtm_post_url = process_request(RANDOM_LGTM_POST_URL)['location']
-
+      return unless lgtm_post_url
       lgtm_post_response = process_request(lgtm_post_url) do |req|
         req['Accept'] = 'application/json'
       end
@@ -67,8 +67,18 @@ module Danger
       end
     end
 
+    def lgtm_post_url
+      lgtm_post_req = process_request(RANDOM_LGTM_POST_URL)
+      return if lgtm_post_req.code == '503'
+      lgtm_post_req['location']
+    end
+
     def markdown_template(image_url)
-      "<p align='center'><img src='#{image_url}' alt='LGTM' /></p>"
+      if image_url.nil?
+        "<h1 align='center'>LGTM</h1>"
+      else
+        "<p align='center'><img src='#{image_url}' alt='LGTM' /></p>"
+      end
     end
   end
 end
