@@ -25,8 +25,8 @@ module Danger
         expect(@dangerfile.status_report[:markdowns].length).to eq(1)
       end
 
-      it 'lgtm with default url is OverQuota' do
-        allow(Net::HTTP).to receive(:start).and_return(mock(code: '503'))
+      it 'lgtm with errors' do
+        allow(@lgtm).to receive(:validate_response).and_raise(::Lgtm::Errors::UnexpectedError)
 
         @lgtm.check_lgtm
 
@@ -35,14 +35,12 @@ module Danger
       end
 
       def mock(request_url: 'https://lgtm.in/p/sSuI4hm0q',
-               actual_image_url: 'https://example.com/image.jpg',
-               code: '302')
+               actual_image_url: 'https://example.com/image.jpg')
         double(
           :[] => request_url,
           body: JSON.generate(
             actualImageUrl: actual_image_url
-          ),
-          code: code
+          )
         )
       end
 
