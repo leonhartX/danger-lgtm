@@ -18,7 +18,12 @@ describe Danger::DangerLgtm do
   end
 
   describe '#check_lgtm' do
-    subject { lgtm.check_lgtm(https_image_only: https_image_only, image_url: image_url) }
+    subject do
+      lgtm.check_lgtm(
+        https_image_only: https_image_only,
+        image_url: image_url
+      )
+    end
 
     let(:dangerfile) { testing_dangerfile }
     let(:lgtm) { dangerfile.lgtm }
@@ -42,7 +47,8 @@ describe Danger::DangerLgtm do
       end
 
       it 'lgtm with errors' do
-        allow(lgtm).to receive(:validate_response).and_raise(::Lgtm::Errors::UnexpectedError)
+        allow(lgtm).to receive(:validate_response)
+          .and_raise(::Lgtm::Errors::UnexpectedError)
         is_expected
         expect(dangerfile.status_report[:markdowns][0].message)
           .to eq("<h1 align='center'>LGTM</h1>")

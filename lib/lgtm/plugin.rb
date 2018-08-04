@@ -55,8 +55,7 @@ module Danger
         return fetch_image_url(https_image_only: true)
       end
       url
-    rescue ::Lgtm::Errors::UnexpectedError
-      nil
+    rescue ::Lgtm::Errors::UnexpectedError; nil
     end
 
     def process_request(url)
