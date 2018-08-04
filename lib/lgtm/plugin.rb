@@ -15,7 +15,7 @@ module Danger
   #          lgtm.check_lgtm image_url: 'http://some.iamge'
   #
   # @see  leonhartX/danger-lgtm
-  # @tags lgtm, githubrequire'pry';binding.pry
+  # @tags lgtm, github
   #
   class DangerLgtm < Plugin
     include ::Lgtm::ErrorHandleable
