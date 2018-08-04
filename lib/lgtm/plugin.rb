@@ -24,11 +24,10 @@ module Danger
     # Check status report, say lgtm if no violations
     # Generates a `markdown` of a lgtm image.
     #
-    # @param   [image_url] lgtm image url
-    # @param   [https_image_only] fetching https image only if true
+    # @param  [String] image_url lgtm image url
+    # @param  [Boolean] https_image_only https image only if true
     #
     # @return  [void]
-    #
     def check_lgtm(image_url: nil, https_image_only: false)
       return unless status_report[:errors].length.zero? &&
                     status_report[:warnings].length.zero?
