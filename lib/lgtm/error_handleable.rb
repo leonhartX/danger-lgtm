@@ -1,5 +1,5 @@
 module Lgtm
-  # ErrorHandleable of module of error handling
+  # ErrorHandleable is module of error handling
   module ErrorHandleable
     # 4xx http status.
     CLIENT_ERRORS = [
@@ -15,7 +15,8 @@ module Lgtm
       Net::HTTPGatewayTimeOut
     ].freeze
 
-    # validate_response is response validationg
+    # validate_response is response validating
+    #
     # @param [Net::HTTPxxx] response Net::HTTP responses
     # @raise ::Lgtm::Errors::UnexpectedError
     # @return [void]

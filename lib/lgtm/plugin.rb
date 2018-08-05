@@ -28,6 +28,7 @@ module Danger
     # @param  [Boolean] https_image_only https image only if true
     #
     # @return  [void]
+    #
     def check_lgtm(image_url: nil, https_image_only: false)
       return unless status_report[:errors].length.zero? &&
                     status_report[:warnings].length.zero?
