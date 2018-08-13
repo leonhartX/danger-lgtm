@@ -3,6 +3,8 @@
 require 'uri'
 require 'json'
 require 'net/http'
+require './lib/lgtm/errors'
+require './lib/lgtm/error_handleable'
 
 module Danger
   # Lgtm let danger say lgtm when there is no violations.
@@ -16,13 +18,14 @@ module Danger
   # @tags lgtm, github
   #
   class DangerLgtm < Plugin
+    include ::Lgtm::ErrorHandleable
     RANDOM_LGTM_POST_URL = 'https://lgtm.in/g'.freeze
 
     # Check status report, say lgtm if no violations
     # Generates a `markdown` of a lgtm image.
     #
-    # @param   [image_url] lgtm image url
-    # @param   [https_image_only] fetching https image only if true
+    # @param  [String] image_url lgtm image url
+    # @param  [Boolean] https_image_only https image only if true
     #
     # @return  [void]
     #
@@ -41,7 +44,6 @@ module Danger
 
     # returns "<h1 align="center">LGTM</h1>" when ServiceTemporarilyUnavailable.
     def fetch_image_url(https_image_only: false)
-      return unless lgtm_post_url
       lgtm_post_response = process_request(lgtm_post_url) do |req|
         req['Accept'] = 'application/json'
       end
@@ -53,6 +55,7 @@ module Danger
         return fetch_image_url(https_image_only: true)
       end
       url
+    rescue ::Lgtm::Errors::UnexpectedError; nil
     end
 
     def process_request(url)
@@ -68,9 +71,9 @@ module Danger
     end
 
     def lgtm_post_url
-      lgtm_post_req = process_request(RANDOM_LGTM_POST_URL)
-      return if lgtm_post_req.code == '503'
-      lgtm_post_req['location']
+      res = process_request(RANDOM_LGTM_POST_URL)
+      validate_response(res)
+      res['location']
     end
 
     def markdown_template(image_url)
