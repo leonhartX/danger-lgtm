@@ -3,8 +3,8 @@
 require 'uri'
 require 'json'
 require 'net/http'
-require './lib/lgtm/errors'
-require './lib/lgtm/error_handleable'
+require_relative 'errors'
+require_relative 'error_handleable'
 
 module Danger
   # Lgtm let danger say lgtm when there is no violations.
