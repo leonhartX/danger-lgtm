@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'uri'
-require 'json'
 require 'net/http'
-require_relative 'errors'
-require_relative 'error_handleable'
+
+require_relative 'network'
 
 module Danger
   # Lgtm let danger say lgtm when there is no violations.
@@ -18,70 +17,102 @@ module Danger
   # @tags lgtm, github
   #
   class DangerLgtm < Plugin
-    include ::Lgtm::ErrorHandleable
-    RANDOM_LGTM_POST_URL = 'https://lgtm.in/g'.freeze
+    include ::Lgtm::Network
 
-    # Check status report, say lgtm if no violations
-    # Generates a `markdown` of a lgtm image.
+    LGTM_URL = 'https://www.lgtm.app'.freeze
+
+    RANDOM_POST_PATH = '/g'.freeze
+    POST_CONTENT_PATH = '/p'.freeze
+
+    # check_lgtm Comment LGTM markdown if report has no violations
     #
-    # @param  [String] image_url lgtm image url
-    # @param  [Boolean] https_image_only https image only if true
+    # @param  [String] image_url LGTM image url
+    # @param  [Boolean] https_image_only Use only secure url
     #
-    # @return  [void]
+    # @return  [nil]
     #
     def check_lgtm(image_url: nil, https_image_only: false)
-      return unless status_report[:errors].length.zero? &&
-                    status_report[:warnings].length.zero?
+      return if status_report[:errors].any?
+      return if status_report[:warnings].any?
 
-      image_url ||= fetch_image_url(https_image_only: https_image_only)
-
-      markdown(
-        markdown_template(image_url)
-      )
+      if image_url
+        comment image_url
+      else
+        comment fetch_image_url(https_image_only)
+      end
     end
 
     private
 
-    # returns "<h1 align="center">LGTM</h1>" when ServiceTemporarilyUnavailable.
-    def fetch_image_url(https_image_only: false)
-      lgtm_post_response = process_request(lgtm_post_url) do |req|
-        req['Accept'] = 'application/json'
-      end
-
-      lgtm_post = JSON.parse(lgtm_post_response.body)
-
-      url = lgtm_post['actualImageUrl']
-      if https_image_only && URI.parse(url).scheme != 'https'
-        return fetch_image_url(https_image_only: true)
-      end
-      url
-    rescue ::Lgtm::Errors::UnexpectedError; nil
-    end
-
-    def process_request(url)
-      uri = URI(url)
-
-      req = Net::HTTP::Get.new(uri)
-
-      yield req if block_given?
-
-      Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
-        http.request(req)
-      end
-    end
-
-    def lgtm_post_url
-      res = process_request(RANDOM_LGTM_POST_URL)
-      validate_response(res)
-      res['location']
-    end
-
-    def markdown_template(image_url)
-      if image_url.nil?
-        "<h1 align='center'>LGTM</h1>"
+    # comment Place markdown comment
+    #
+    # @param  [Boolean] url LGTM image url
+    #
+    # @return  [nil]
+    #
+    def comment(url)
+      if url.nil?
+        markdown("<h1 align='center'>LGTM</h1>")
       else
-        "<p align='center'><img src='#{image_url}' alt='LGTM' /></p>"
+        markdown("<p align='center'><img src='#{url}' alt='LGTM' /></p>")
       end
+    end
+
+    # fetch_image_url Fetch LGTM image url from https://www.lgtm.app
+    #
+    # @param  [Boolean] reject_insecure_url Eeturn only secure url
+    #
+    # @return  [String] LGTM image url
+    #
+    def fetch_image_url(reject_insecure_url = false)
+      post_id = fetch_randon_post_id
+      return if post_id.empty?
+
+      post_content_url = fetch_post_content_url(post_id)
+      return if post_content_url.empty?
+
+      return fetch_image_url(reject_insecure_url) if retry?(reject_insecure_url,
+                                                            post_content_url)
+
+      post_content_url
+    rescue ::Lgtm::Network::NetworkError => e
+      $stdout.puts e.message
+    end
+
+    # fetch_randon_post_id Fetch renadon LGTM post url from https://www.lgtm.app
+    #
+    # @return  [String] LGTM post url
+    #
+    def fetch_randon_post_id
+      uri = URI.join(LGTM_URL, RANDOM_POST_PATH)
+      response = process_request(uri)
+      location = parse_redirect_location(response)
+
+      location.split('/').last
+    end
+
+    # fetch_post_content_url Fetch LGTM image url from https://www.lgtm.app
+    #
+    # @param  [String] post_id LGTM post identifier
+    #
+    # @return  [String] LGTM image url
+    #
+    def fetch_post_content_url(post_id)
+      uri = URI.join(LGTM_URL, POST_CONTENT_PATH, post_id)
+      response = process_request(uri)
+
+      parse_redirect_location(response)
+    end
+
+    # retry? Check should be image url requested again
+    #
+    # @param  [Boolean] reject_insecure_url Return only secure url
+    # @param  [String] url LGTM image url
+    #
+    # @return  [Boolean] should be image url requested again
+    #
+    def retry?(reject_insecure_url, url)
+      reject_insecure_url && https?(URI.parse(url))
     end
   end
 end
