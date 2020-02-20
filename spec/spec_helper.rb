@@ -59,3 +59,23 @@ def testing_dangerfile
   env = Danger::EnvironmentManager.new(testing_env)
   Danger::Dangerfile.new(env, testing_ui)
 end
+
+# Failute response mock
+def failure_response_mock(message)
+  mock = double('Response')
+
+  allow(mock).to receive(:is_a?).with(Net::HTTPError).and_return(true)
+  allow(mock).to receive(:message).and_return(message)
+
+  mock
+end
+
+# Success response mock
+def success_response_mock(url)
+  mock = double('Response')
+
+  allow(mock).to receive(:is_a?).with(Net::HTTPError).and_return(false)
+  allow(mock).to receive(:[]).with('location').and_return(url)
+
+  mock
+end
