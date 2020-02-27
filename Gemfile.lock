@@ -39,7 +39,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday-http-cache (2.0.0)
       faraday (~> 0.8)
-    ffi (1.9.18)
+    ffi (1.12.2)
     formatador (0.2.5)
     git (1.6.0)
       rchardet (~> 1.8)
