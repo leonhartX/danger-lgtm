@@ -41,7 +41,7 @@ GEM
       faraday (~> 0.8)
     ffi (1.12.2)
     formatador (0.2.5)
-    git (1.6.0)
+    git (1.11.0)
       rchardet (~> 1.8)
     guard (2.14.1)
       formatador (>= 0.2.4)
